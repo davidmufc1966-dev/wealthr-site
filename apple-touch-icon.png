@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Page Not Found — Wealthr</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,700&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07070e;color:#f0f0f0;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.icon{font-size:64px;margin-bottom:24px}
+h1{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;letter-spacing:-.02em;margin-bottom:12px}
+h1 em{font-style:italic;color:#00e676}
+p{color:#555;font-size:12px;margin-bottom:32px;line-height:1.8}
+a{display:inline-block;background:#00e676;color:#000;padding:12px 28px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div>
+  <div class="icon">💸</div>
+  <h1>404 — <em>Lost</em></h1>
+  <p>This page doesn't exist.<br>Let's get you back on track.</p>
+  <a href="/">Back to Wealthr →</a>
+</div>
+</body>
+</html>

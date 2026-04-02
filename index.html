@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wealthr — Free UK Personal Finance Tracker</title>
+<meta name="description" content="Wealthr is a free UK personal finance app. Track your net worth, budget, stocks, crypto, pension and property — all in one place. 100% private, data stays on your device."/>
+<meta name="keywords" content="personal finance app UK, net worth tracker, budget tracker, stock portfolio tracker, crypto tracker, pension tracker, property tracker, free finance app"/>
+<meta name="author" content="Wealthr"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://getwealthr.com"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://getwealthr.com"/>
+<meta property="og:title" content="Wealthr — Free UK Personal Finance Tracker"/>
+<meta property="og:description" content="Track your net worth, budget, stocks, crypto, pension and property. Free, private, and all in one app. Your data never leaves your device."/>
+<meta property="og:image" content="https://getwealthr.com/icons/icon-512.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:url" content="https://getwealthr.com"/>
+<meta name="twitter:title" content="Wealthr — Free UK Personal Finance Tracker"/>
+<meta name="twitter:description" content="Track your net worth, budget, stocks, crypto, pension and property. Free, private, all in one app."/>
+<meta name="twitter:image" content="https://getwealthr.com/icons/icon-512.png"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07070e;--card:#0d0d1a;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);--green:#00e676;--blue:#4d9fff;--purple:#c084fc;--gold:#ffd166;--red:#ff4d6d;--text:#f0f0f0;--muted:#444;--dim:#777}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',monospace;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;pointer-events:none;z-index:0;background-size:200px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,14,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-icon{width:34px;height:34px;background:linear-gradient(135deg,#00e676,#00c853);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#000;font-family:'Playfair Display',serif;box-shadow:0 0 16px rgba(0,230,118,0.3)}
+.nav-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.02em}
+.nav-name em{font-style:italic;color:var(--green)}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{font-size:11px;color:var(--dim);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--green);color:#000;border:none;padding:9px 22px;border-radius:8px;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:none;letter-spacing:.06em;transition:all .2s;box-shadow:0 0 20px rgba(0,230,118,0.2)}
+.nav-cta:hover{box-shadow:0 0 32px rgba(0,230,118,0.4);transform:translateY(-1px)}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,0.05) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
+.hero-glow2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(77,159,255,0.04) 0%,transparent 70%);top:20%;right:-100px;pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);border-radius:30px;padding:7px 16px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:32px;position:relative;z-index:1}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.btn-primary{position:relative}
+.btn-primary::after{content:'';position:absolute;inset:-4px;border-radius:18px;border:2px solid rgba(0,230,118,0.3);animation:btnPulse 2s infinite}
+@keyframes btnPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0;transform:scale(1.06)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(0.8)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(44px,8vw,88px);font-weight:900;line-height:1.02;letter-spacing:-.03em;margin-bottom:24px;max-width:900px;position:relative;z-index:1}
+.hero h1 em{font-style:italic;color:var(--green)}
+.hero h1 .line2{color:var(--dim)}
+.hero-sub{font-size:13px;color:var(--dim);max-width:500px;line-height:1.9;margin-bottom:40px;position:relative;z-index:1;font-weight:300}
+.hero-sub strong{color:var(--text);font-weight:500}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;position:relative;z-index:1}
+.btn-primary{background:var(--green);color:#000;border:none;padding:18px 40px;border-radius:14px;font-size:15px;font-weight:700;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:none;letter-spacing:.05em;transition:all .2s;box-shadow:0 4px 32px rgba(0,230,118,0.4)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 48px rgba(0,230,118,0.6)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border2);padding:15px 32px;border-radius:12px;font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:none;letter-spacing:.05em;transition:all .2s}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.03)}
+.hero-mock{position:relative;z-index:1;width:100%;max-width:360px;background:rgba(13,13,26,0.9);border:1px solid var(--border2);border-radius:24px;padding:20px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,0.6);margin-bottom:48px}
+.mock-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.mock-nw{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--green);letter-spacing:-.03em;line-height:1;margin-bottom:16px}
+.mock-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mock-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 12px}
+.mock-card-label{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.mock-card-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
+.hero-stats{display:flex;gap:0;position:relative;z-index:1;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(13,13,26,0.6)}
+.stat{padding:20px 32px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--text)}
+.stat-label{font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.section{padding:90px 24px;max-width:1060px;margin:0 auto;position:relative;z-index:1}
+.section-eyebrow{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-eyebrow::before{content:'';width:24px;height:1px;background:var(--blue)}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,48px);font-weight:900;line-height:1.08;margin-bottom:56px;letter-spacing:-.02em}
+.section-title em{font-style:italic;color:var(--blue)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;transition:all .25s;position:relative;overflow:hidden}
+.feature-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.4)}
+.feature-card.green{border-top:2px solid var(--green)}
+.feature-card.blue{border-top:2px solid var(--blue)}
+.feature-card.purple{border-top:2px solid var(--purple)}
+.feature-card.gold{border-top:2px solid var(--gold)}
+.feature-card.red{border-top:2px solid var(--red)}
+.feature-icon{font-size:26px;margin-bottom:14px;display:block}
+.feature-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:10px}
+.feature-desc{font-size:11px;color:var(--dim);line-height:1.75;font-weight:300}
+.feature-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.feature-tag{font-size:9px;letter-spacing:.06em;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.05);color:var(--muted)}
+.pro-section{padding:80px 24px;position:relative;z-index:1}
+.pro-inner{max-width:1060px;margin:0 auto;background:linear-gradient(135deg,rgba(255,209,102,0.06),rgba(247,147,26,0.04));border:1px solid rgba(255,209,102,0.2);border-radius:24px;padding:56px 48px;position:relative;overflow:hidden}
+.pro-inner::before{content:'✨';position:absolute;right:48px;top:40px;font-size:80px;opacity:.06}
+.pro-eyebrow{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.pro-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;margin-bottom:12px}
+.pro-title em{font-style:italic;color:var(--gold)}
+.pro-sub{font-size:12px;color:var(--dim);margin-bottom:40px;line-height:1.8;max-width:500px;font-weight:300}
+.pro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:40px}
+.pro-item{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--dim)}
+.pro-item-check{width:18px;height:18px;border-radius:5px;background:rgba(255,209,102,0.15);border:1px solid rgba(255,209,102,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0}
+.pro-price{display:flex;align-items:baseline;gap:8px;margin-bottom:24px}
+.pro-price-num{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--gold);letter-spacing:-.03em}
+.pro-price-per{font-size:13px;color:var(--muted)}
+.btn-pro{display:inline-block;background:linear-gradient(135deg,#ffd166,#f7931a);color:#000;border:none;padding:14px 32px;border-radius:12px;font-size:13px;font-weight:700;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:none;letter-spacing:.05em;transition:all .2s}
+.btn-pro:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,209,102,0.3)}
+.privacy-section{padding:80px 24px;position:relative;z-index:1;border-top:1px solid var(--border)}
+.privacy-inner{max-width:760px;margin:0 auto;text-align:center}
+.privacy-icon{font-size:52px;margin-bottom:24px;display:block}
+.privacy-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;margin-bottom:16px}
+.privacy-title em{font-style:italic;color:var(--green)}
+.privacy-desc{color:var(--dim);font-size:12px;line-height:1.9;margin-bottom:40px;font-weight:300}
+.privacy-points{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.privacy-point{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--dim);background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.15);border-radius:30px;padding:7px 14px}
+.privacy-point span{color:var(--green)}
+.tabs-section{padding:80px 24px;position:relative;z-index:1;border-top:1px solid var(--border)}
+.tabs-inner{max-width:1060px;margin:0 auto}
+.tabs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.tab-tile{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center;transition:all .2s}
+.tab-tile:hover{border-color:var(--border2);transform:translateY(-2px)}
+.tab-tile-icon{font-size:24px;margin-bottom:8px}
+.tab-tile-name{font-size:10px;color:var(--dim);letter-spacing:.06em}
+.cta-section{padding:100px 24px;text-align:center;position:relative;z-index:1}
+.cta-inner{max-width:620px;margin:0 auto}
+.cta-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.02em;margin-bottom:18px;line-height:1.08}
+.cta-title em{font-style:italic;color:var(--green)}
+.cta-desc{color:var(--dim);font-size:12px;margin-bottom:36px;line-height:1.9;font-weight:300}
+footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;font-size:10px;color:var(--muted);position:relative;z-index:1}
+footer a{color:var(--blue);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--text)}
+.footer-inner{max-width:1060px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 24px;position:relative;z-index:1}
+@media(max-width:600px){nav{padding:12px 16px}.nav-links{display:none}.section{padding:60px 16px}.pro-inner{padding:32px 24px}.stat{padding:16px 20px}.hero-stats{flex-wrap:wrap}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{animation:fadeUp .6s ease both}
+.hero h1{animation:fadeUp .6s .1s ease both}
+.hero-sub{animation:fadeUp .6s .2s ease both}
+.hero-btns{animation:fadeUp .6s .3s ease both}
+.hero-mock{animation:fadeUp .6s .4s ease both}
+.hero-stats{animation:fadeUp .6s .5s ease both}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-icon">W</div>
+    <div class="nav-name">Wealth<em>r</em></div>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pro">Pro</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  <a href="/app" class="nav-cta">Open App →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-badge"><div class="hero-badge-dot"></div>Free · No Sign Up · 100% Private</div>
+  <h1>Know your <em>net worth</em><br><span class="line2">down to the penny</span></h1>
+  <p class="hero-sub">Wealthr tracks your <strong>bank accounts, stocks, crypto, pension, property, budget and bills</strong> — all in one private app. Your data never leaves your device.</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-primary">🚀 Try Wealthr Free — No Sign Up</a>
+    <a href="#features" class="btn-secondary">See All Features</a>
+  </div>
+  <div style="font-size:11px;color:#444;margin-top:-32px;margin-bottom:48px;position:relative;z-index:1">No account needed · Works offline · Data stays on your device</div>
+  <div class="hero-mock">
+    <div class="mock-nw">£42,850</div>
+    <div class="mock-grid">
+      <div class="mock-card"><div class="mock-card-label">Portfolio</div><div class="mock-card-val" style="color:#4d9fff">£12,400</div></div>
+      <div class="mock-card"><div class="mock-card-label">Bank</div><div class="mock-card-val" style="color:#00e676">£18,200</div></div>
+      <div class="mock-card"><div class="mock-card-label">Crypto</div><div class="mock-card-val" style="color:#c084fc">£3,650</div></div>
+      <div class="mock-card"><div class="mock-card-label">Pension</div><div class="mock-card-val" style="color:#ffd166">£28,600</div></div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">13</div><div class="stat-label">Feature Tabs</div></div>
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Currencies</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Private</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">To Use</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="features">
+  <div class="section-eyebrow">Features</div>
+  <div class="section-title">Everything you need to<br><em>understand your money</em></div>
+  <div class="features-grid">
+    <div class="feature-card green">
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Net Worth Overview</div>
+      <div class="feature-desc">See your total and liquid net worth at a glance, with a beautiful breakdown of assets vs liabilities. Save monthly snapshots and watch your wealth grow over time with a history chart.</div>
+      <div class="feature-tags"><span class="feature-tag">Live charts</span><span class="feature-tag">History snapshots</span><span class="feature-tag">Asset breakdown</span></div>
+    </div>
+    <div class="feature-card blue">
+      <span class="feature-icon">💰</span>
+      <div class="feature-title">Budget Tracker</div>
+      <div class="feature-desc">Create budget categories with monthly limits, log spending instantly, track recurring transactions, and see exactly how your spending affects your net worth.</div>
+      <div class="feature-tags"><span class="feature-tag">Categories</span><span class="feature-tag">Recurring</span><span class="feature-tag">One-off</span><span class="feature-tag">Month view</span></div>
+    </div>
+    <div class="feature-card blue">
+      <span class="feature-icon">📈</span>
+      <div class="feature-title">Stock Portfolio</div>
+      <div class="feature-desc">Track US and UK stocks with live prices via Twelve Data API. See total value, gain/loss, return percentage, and portfolio allocation charts. Import positions via CSV.</div>
+      <div class="feature-tags"><span class="feature-tag">Live prices</span><span class="feature-tag">US & UK stocks</span><span class="feature-tag">CSV import</span></div>
+    </div>
+    <div class="feature-card purple">
+      <span class="feature-icon">₿</span>
+      <div class="feature-title">Crypto Holdings</div>
+      <div class="feature-desc">Track Bitcoin, Ethereum, Solana and 15+ coins with live GBP prices. See 24h change, portfolio allocation, and lookup any Bitcoin wallet address for a live balance.</div>
+      <div class="feature-tags"><span class="feature-tag">CoinGecko</span><span class="feature-tag">24h change</span><span class="feature-tag">Wallet lookup</span></div>
+    </div>
+    <div class="feature-card green">
+      <span class="feature-icon">🏦</span>
+      <div class="feature-title">Bank Accounts</div>
+      <div class="feature-desc">Add all your current accounts, savings, ISAs and fixed term accounts. Track interest rates, savings goals, FSCS protection status, and annual interest earned.</div>
+      <div class="feature-tags"><span class="feature-tag">40+ UK banks</span><span class="feature-tag">FSCS badges</span><span class="feature-tag">Savings goals</span></div>
+    </div>
+    <div class="feature-card red">
+      <span class="feature-icon">💳</span>
+      <div class="feature-title">Credit Cards & Loans</div>
+      <div class="feature-desc">Track credit card balances, limits, APR and due dates. Add loans with full amortisation — see monthly interest vs principal, payoff date estimate and total interest remaining.</div>
+      <div class="feature-tags"><span class="feature-tag">Utilisation</span><span class="feature-tag">Amortisation</span><span class="feature-tag">Payoff date</span></div>
+    </div>
+    <div class="feature-card gold">
+      <span class="feature-icon">🏛️</span>
+      <div class="feature-title">Pension Tracker</div>
+      <div class="feature-desc">Add workplace pensions, SIPPs and the State Pension. Get projected pot value at retirement, inflation-adjusted estimates, monthly income projections and tax relief calculations.</div>
+      <div class="feature-tags"><span class="feature-tag">Projections</span><span class="feature-tag">Tax relief</span><span class="feature-tag">Annual allowance</span></div>
+    </div>
+    <div class="feature-card green">
+      <span class="feature-icon">🏠</span>
+      <div class="feature-title">Property</div>
+      <div class="feature-desc">Track property values, mortgage balances and rental income. Property equity counts toward your net worth. Look up recent sold prices by postcode via Land Registry.</div>
+      <div class="feature-tags"><span class="feature-tag">Equity tracking</span><span class="feature-tag">Land Registry</span><span class="feature-tag">Rental income</span></div>
+    </div>
+    <div class="feature-card gold">
+      <span class="feature-icon">🔔</span>
+      <div class="feature-title">Bill Reminders</div>
+      <div class="feature-desc">Add recurring bills — monthly, weekly, quarterly or annual. Get push notifications before bills are due so you never miss a payment. See monthly and annual totals at a glance.</div>
+      <div class="feature-tags"><span class="feature-tag">Push notifications</span><span class="feature-tag">All cycles</span><span class="feature-tag">Due soon alerts</span></div>
+    </div>
+    <div class="feature-card purple">
+      <span class="feature-icon">📺</span>
+      <div class="feature-title">Subscription Tracker</div>
+      <div class="feature-desc">Track all your subscriptions in one place — Netflix, Spotify, gym, phone, cloud storage and more. Total monthly and annual cost factored into your budget automatically.</div>
+      <div class="feature-tags"><span class="feature-tag">Monthly/Annual/Weekly</span><span class="feature-tag">Budget integration</span></div>
+    </div>
+    <div class="feature-card blue">
+      <span class="feature-icon">📰</span>
+      <div class="feature-title">Finance News</div>
+      <div class="feature-desc">Live headlines from BBC Business, Sky News, CNBC, Bloomberg, Reuters, Guardian, FT and Yahoo Finance. Add tickers to your watchlist to highlight relevant stories.</div>
+      <div class="feature-tags"><span class="feature-tag">9 sources</span><span class="feature-tag">Watchlist</span><span class="feature-tag">Live feed</span></div>
+    </div>
+    <div class="feature-card green">
+      <span class="feature-icon">📡</span>
+      <div class="feature-title">Live Market Data</div>
+      <div class="feature-desc">Overview widget showing BTC/GBP, GBP/USD, Gold price, BoE Base Rate, FTSE 100 and S&P 500 — all live, refreshed on demand.</div>
+      <div class="feature-tags"><span class="feature-tag">BTC</span><span class="feature-tag">FTSE 100</span><span class="feature-tag">S&P 500</span><span class="feature-tag">Gold</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="tabs-section">
+  <div class="tabs-inner">
+    <div class="section-eyebrow" style="margin-bottom:20px">All 13 Tabs</div>
+    <div class="tabs-grid">
+      <div class="tab-tile"><div class="tab-tile-icon">📊</div><div class="tab-tile-name">Overview</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">💰</div><div class="tab-tile-name">Budget & Bills</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">🏦</div><div class="tab-tile-name">Bank</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">📈</div><div class="tab-tile-name">Portfolio</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">₿</div><div class="tab-tile-name">Crypto</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">💳</div><div class="tab-tile-name">Cards</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">📋</div><div class="tab-tile-name">Loans</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">🏛️</div><div class="tab-tile-name">Pension</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">🏠</div><div class="tab-tile-name">Property</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">📰</div><div class="tab-tile-name">News</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">⚙️</div><div class="tab-tile-name">Settings</div></div>
+      <div class="tab-tile"><div class="tab-tile-icon">❓</div><div class="tab-tile-name">FAQ</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="pro-section" id="pro">
+  <div class="pro-inner">
+    <div class="pro-eyebrow">✨ Wealthr Pro</div>
+    <div class="pro-title">Unlock <em>everything</em></div>
+    <div class="pro-sub">The free plan gives you access to core features. Upgrade to Pro to remove all limits and unlock advanced tools — for less than a coffee a month.</div>
+    <div class="pro-grid">
+      <div class="pro-item"><div class="pro-item-check">✓</div>Unlimited accounts & holdings</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Net worth history snapshots</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Property & pension tracking</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Finance news & watchlist</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Bill reminders & notifications</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Subscription tracker</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Recurring transactions</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>CSV import & export</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>30+ global currencies</div>
+      <div class="pro-item"><div class="pro-item-check">✓</div>Custom app name</div>
+    </div>
+    <div class="pro-price">
+      <div class="pro-price-num">£1.49</div>
+      <div class="pro-price-per">/month · cancel anytime</div>
+    </div>
+    <a href="/app" class="btn-pro">✨ Upgrade to Pro in App →</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="privacy-section">
+  <div class="privacy-inner">
+    <span class="privacy-icon">🔒</span>
+    <div class="privacy-title">Your data stays on<br><em>your device</em></div>
+    <div class="privacy-desc">We never see your financial data. Everything is stored in your browser's local storage — no accounts, no cloud sync, no bank linking required. Just open the app and start tracking.</div>
+    <div class="privacy-points">
+      <div class="privacy-point"><span>✓</span> No sign up required</div>
+      <div class="privacy-point"><span>✓</span> No bank linking</div>
+      <div class="privacy-point"><span>✓</span> No ads ever</div>
+      <div class="privacy-point"><span>✓</span> No data collection</div>
+      <div class="privacy-point"><span>✓</span> Works offline</div>
+      <div class="privacy-point"><span>✓</span> Install as an app</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-title">Start tracking your<br><em>wealth today</em></div>
+    <div class="cta-desc">No sign up. No bank linking. Opens instantly in your browser or install it on your phone as an app. Free forever for core features.</div>
+    <a href="/app" class="btn-primary">🚀 Try Wealthr Free — No Sign Up</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Wealthr · All rights reserved</span>
+    <span><a href="/privacy">Privacy Policy</a> · <a href="/app">Open App</a> · <a href="mailto:wealthr42@outlook.com">Contact</a></span>
+    <span>Not financial advice · Data stays on your device</span>
+  </div>
+</footer>
+
+</body>
+</html>
