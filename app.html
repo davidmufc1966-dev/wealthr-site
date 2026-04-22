@@ -84,7 +84,7 @@ select option{background:#111;color:#f0f0f0}
 .card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .card-title::after{content:'';flex:1;height:1px;background:#222}
 label.lbl{display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#555;margin-bottom:5px}
-input.inp,select.inp{width:100%;padding:10px 12px;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;font-size:13px;color:#f0f0f0;outline:none}
+input.inp,select.inp{width:100%;padding:10px 12px;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;font-size:16px;color:#f0f0f0;outline:none}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;align-items:end;margin-bottom:10px}
 .btn-add{width:100%;padding:12px;font-size:12px;font-weight:600;border:none;border-radius:10px;cursor:pointer;letter-spacing:.05em;margin-top:4px}
 .btn-green{background:#00e676;color:#000}
@@ -96,7 +96,7 @@ input.inp,select.inp{width:100%;padding:10px 12px;background:#0d0d0d;border:1px 
 /* Cash row */
 .cash-row{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #222;flex-wrap:wrap}
 .cash-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#555;white-space:nowrap}
-.cash-row input{flex:1;min-width:100px;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:13px;color:#f0f0f0;outline:none}
+.cash-row input{flex:1;min-width:100px;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:16px;color:#f0f0f0;outline:none}
 
 /* Table */
 .table-wrap{background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:12px}
@@ -155,7 +155,7 @@ tr:nth-child(even){background:#0d0d0d}
 .type-badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:10px;letter-spacing:.08em}
 
 /* Inline balance input */
-.bal-input{width:90px;padding:4px 6px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:12px;color:#ffd166;outline:none;text-align:right}
+.bal-input{width:90px;padding:4px 6px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:16px;color:#ffd166;outline:none;text-align:right}
 .bal-input-red{color:#ff4d6d}
 
 /* News */
@@ -188,7 +188,7 @@ canvas{width:100%!important;display:block}
 .wl-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;background:#1a1a2e;border:1px solid #4d9fff44;border-radius:20px;font-size:11px;color:#4d9fff}
 .wl-chip button{background:none;border:none;color:#4d9fff;cursor:pointer;font-size:12px;padding:0;line-height:1}
 .wl-add-row{display:flex;gap:8px}
-.wl-add-row input{flex:1;padding:7px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:12px;color:#f0f0f0;outline:none}
+.wl-add-row input{flex:1;padding:7px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:2px;font-size:16px;color:#f0f0f0;outline:none}
 .wl-add-row button{padding:7px 14px;background:#4d9fff;color:#000;border:none;border-radius:2px;font-size:11px;font-weight:600;cursor:pointer}
 .wl-match{background:rgba(77,159,255,.08);border-left-color:#4d9fff!important}
 
@@ -1632,6 +1632,7 @@ async function lrLookup() {
 const raw = document.getElementById('lrPostcode').value.trim().toUpperCase();
 const el = document.getElementById('lrResults');
 if (!raw) return toast('Enter a postcode.');
+if (!/^[A-Z0-9 ]+$/.test(raw)) return toast('Enter a valid postcode.');
 el.innerHTML = '<div style="font-size:11px;color:#555">Searching…</div>';
 const postcode = raw.replace(/ /g, '+');
 const sparql = `SELECT ?paon ?street ?town ?price ?date ?type WHERE {
@@ -1791,6 +1792,9 @@ weekly: 'Weekly',
 quarterly: 'Quarterly',
 annually: 'Annually',
 };
+function esc(s) {
+return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function billsLoad() {
 const s = load();
 return s.bills || [];
@@ -1852,7 +1856,7 @@ const color = days === 0 ? '#ff4d6d' : days <= 2 ? '#ffd166' : '#4d9fff';
 return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:${color}11;border:1px solid ${color}33;border-radius:10px;margin-bottom:8px">
 <span style="font-size:20px">${b.cat.split(' ')[0]}</span>
 <div style="flex:1">
-<div style="font-size:13px;font-weight:600">${b.name}</div>
+<div style="font-size:13px;font-weight:600">${esc(b.name)}</div>
 <div style="font-size:10px;color:#555">${days===0?'Due today':days===1?'Due tomorrow':`Due in ${days} days`}</div>
 </div>
 <div style="font-size:14px;font-weight:700;color:${color}">${fmt$(b.amount)}</div>
@@ -2477,7 +2481,7 @@ window.scrollTo({top: 0, behavior: 'smooth'});
 const GECKO_IDS = {BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',ADA:'cardano',DOT:'polkadot',DOGE:'dogecoin',MATIC:'matic-network',LINK:'chainlink',AVAX:'avalanche-2',ATOM:'cosmos',LTC:'litecoin',UNI:'uniswap',TON:'the-open-network',SHIB:'shiba-inu',TRX:'tron',XLM:'stellar',ALGO:'algorand'};
 const COIN_EMOJI = {BTC:'₿',ETH:'🔷',BNB:'🟡',SOL:'◎',XRP:'💧',ADA:'🔵',DOT:'⚫',DOGE:'🐶',MATIC:'🟣',LINK:'🔗',AVAX:'🔺',ATOM:'⚛️',LTC:'Ł',UNI:'🦄',TON:'💎',SHIB:'🐕',TRX:'⚡',XLM:'⭐',ALGO:'◆'};
 async function fetchCryptoPrices(coins) {
-const ids = coins.map(c => GECKO_IDS[c.toUpperCase()]||c.toLowerCase()).join(',');
+const ids = coins.map(c => encodeURIComponent(GECKO_IDS[c.toUpperCase()]||c.toLowerCase())).join(',');
 const urls = [
 `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=gbp&include_24hr_change=true`,
 `https://corsproxy.io/?${encodeURIComponent(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=gbp&include_24hr_change=true`)}`,
@@ -2944,11 +2948,11 @@ return `<div style="padding:14px;border-bottom:1px solid #1a1a1a">
 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
 <div>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
-<span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700">${a.name}</span>
-<span class="type-badge" style="background:${color}18;color:${color};border:1px solid ${color}44;font-size:9px">${a.type}</span>
+<span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700">${esc(a.name)}</span>
+<span class="type-badge" style="background:${color}18;color:${color};border:1px solid ${color}44;font-size:9px">${esc(a.type)}</span>
 ${stale?'<span class="tag-small" style="background:rgba(255,209,102,.12);color:#ffd166">STALE</span>':''}
 </div>
-<div style="font-size:10px;color:#555">${a.bank} · updated ${bkAge(a.updatedAt)}</div>
+<div style="font-size:10px;color:#555">${esc(a.bank)} · updated ${bkAge(a.updatedAt)}</div>
 </div>
 <div style="text-align:right">
 <input class="bal-input" type="number" value="${(a.balance*(fxRates[baseCurrency]||1)).toFixed(2)}" min="0" step="any" onchange="bkUpdateBal('${a.id}',this.value/(fxRates[baseCurrency]||1))" style="font-size:16px;width:110px;text-align:right"/>
@@ -3059,13 +3063,13 @@ return `<div style="padding:14px;border-bottom:1px solid #1a1a1a">
 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
 <div>
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
-<span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700">💳 ${c.name}</span>
+<span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700">💳 ${esc(c.name)}</span>
 ${overdue?'<span class="tag-small" style="background:rgba(255,77,109,.15);color:#ff4d6d">OVERDUE</span>':dueSoon?`<span class="tag-small" style="background:rgba(255,209,102,.15);color:#ffd166">Due in ${daysUntil}d</span>`:''}
 </div>
-<div style="font-size:10px;color:#555">${c.provider}${c.apr?` · ${c.apr}% APR`:''}</div>
+<div style="font-size:10px;color:#555">${esc(c.provider)}${c.apr?` · ${c.apr}% APR`:''}</div>
 </div>
 <div style="text-align:right">
-<input class="bal-input bal-input-red" type="number" value="${(c.balance*(fxRates[baseCurrency]||1)).toFixed(2)}" min="0" step="any" onchange="ccUpdateBal('${c.id}',this.value)" style="font-size:16px;width:110px;text-align:right"/>
+<input class="bal-input bal-input-red" type="number" value="${(c.balance*(fxRates[baseCurrency]||1)).toFixed(2)}" min="0" step="any" onchange="ccUpdateBal('${c.id}',this.value/(fxRates[baseCurrency]||1))" style="font-size:16px;width:110px;text-align:right"/>
 <div style="font-size:10px;color:#555;margin-top:2px">balance owed</div>
 </div>
 </div>
@@ -3864,7 +3868,7 @@ let price = null;
 const isIntl = sym.includes('.');
 if (isIntl && avKey) {
 try {
-const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${avKey}`;
+const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(avKey)}`;
 const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
 if (r.ok) {
 const d = await r.json();
@@ -3874,7 +3878,7 @@ if (p) price = parseFloat(p);
 } catch {}
 }
 if (price == null && tdKey) {
-const url = `https://api.twelvedata.com/price?symbol=${sym}&apikey=${tdKey}`;
+const url = `https://api.twelvedata.com/price?symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(tdKey)}`;
 const proxies = [
 [`https://corsproxy.io/?${encodeURIComponent(url)}`, r => r.json()],
 [`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, async r => { const w=await r.json(); return JSON.parse(w.contents||'{}'); }],
@@ -4075,8 +4079,8 @@ const color = PR_COLORS[p.type] || '#888';
 const equity = Math.max(0,(p.value||0)-(p.mortgage||0));
 const pct = p.value ? Math.round(equity/p.value*100) : 0;
 return `<tr>
-<td><span class="sym-name">${p.name}</span><br><span style="font-size:10px;color:#555">${p.address||''}</span></td>
-<td><span class="type-badge" style="background:${color}18;color:${color};border:1px solid ${color}44">${p.type}</span></td>
+<td><span class="sym-name">${esc(p.name)}</span><br><span style="font-size:10px;color:#555">${esc(p.address||'')}</span></td>
+<td><span class="type-badge" style="background:${color}18;color:${color};border:1px solid ${color}44">${esc(p.type)}</span></td>
 <td><input class="bal-input" type="number" value="${(p.value*(fxRates[baseCurrency]||1)).toFixed(2)}" min="0" step="any" onchange="propertyUpdateVal('${p.id}',this.value/(fxRates[baseCurrency]||1))" style="color:#00e676"/></td>
 <td><input class="bal-input bal-input-red" type="number" value="${((p.mortgage||0)*(fxRates[baseCurrency]||1)).toFixed(2)}" min="0" step="any" onchange="propertyUpdateMortgage('${p.id}',this.value/(fxRates[baseCurrency]||1))"/></td>
 <td style="color:#4d9fff">${fmt$(equity)}<br><span style="font-size:10px;color:#555">${pct}% owned</span></td>
@@ -4569,21 +4573,26 @@ const titleEl = document.querySelector('.logo-title');
 if (titleEl) {
 const parts = _savedName.split(' ');
 const last = parts.pop();
-titleEl.innerHTML = parts.length ? `${parts.join(' ')} <em>${last}</em>` : `<em>${_savedName}</em>`;
+titleEl.innerHTML = parts.length ? `${esc(parts.join(' '))} <em>${esc(last)}</em>` : `<em>${esc(_savedName)}</em>`;
 }
 }
 let fxRates = {};
+let fxRatesStale = false;
 async function loadFxRates() {
 const fallback = {GBP:1,USD:1.27,EUR:1.17,JPY:189,CAD:1.73,AUD:1.97,CHF:1.12,INR:105,SGD:1.70,NZD:2.12,HKD:9.93,SEK:13.2,NOK:13.5,DKK:8.75,AED:4.66,ZAR:23.5,BRL:6.4,MXN:21.5,CNY:9.2,KRW:1710,TRY:41.2,PLN:5.08,THB:44.5,MYR:5.85,IDR:20400,PHP:71.5,SAR:4.76,NGN:1950,EGP:62.5,PKR:354};
 try {
 const r = await fetch('https://open.er-api.com/v6/latest/GBP');
 if (r.ok) {
 const d = await r.json();
-if (d.rates) { fxRates = d.rates; fxRates['GBP'] = 1; return; }
+if (d.rates) { fxRates = d.rates; fxRates['GBP'] = 1; fxRatesStale = false; return; }
 }
 fxRates = fallback;
+fxRatesStale = true;
+if (baseCurrency !== 'GBP') toast('Using offline FX rates — conversions may be stale.', true);
 } catch {
 fxRates = fallback;
+fxRatesStale = true;
+if (baseCurrency !== 'GBP') toast('Using offline FX rates — conversions may be stale.', true);
 }
 }
 function fmtCurrency(gbpValue) {
@@ -4742,7 +4751,7 @@ if (titleEl) {
 const n = name || 'Wealthr';
 const parts = n.split(' ');
 const last = parts.pop();
-titleEl.innerHTML = parts.length ? `${parts.join(' ')} <em>${last}</em>` : `<em>${n}</em>`;
+titleEl.innerHTML = parts.length ? `${esc(parts.join(' '))} <em>${esc(last)}</em>` : `<em>${esc(n)}</em>`;
 }
 toast('App name saved!', false);
 }
