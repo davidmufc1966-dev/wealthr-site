@@ -1795,6 +1795,10 @@ annually: 'Annually',
 function esc(s) {
 return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+const _rateLimitedUntil = {};
+function _isRateLimited(service) { return (_rateLimitedUntil[service] || 0) > Date.now(); }
+function _rateLimitRemaining(service) { return Math.ceil(((_rateLimitedUntil[service] || 0) - Date.now()) / 1000); }
+function _setRateLimit(service, retryAfter) { _rateLimitedUntil[service] = Date.now() + (retryAfter || 60) * 1000; }
 function billsLoad() {
 const s = load();
 return s.bills || [];
@@ -1967,7 +1971,10 @@ function billMarkPaid(id) {
 }
 
 function billRemove(id) {
-billsSave(billsLoad().filter(b => b.id !== id));
+const bills = billsLoad();
+const b = bills.find(x => x.id === id);
+if (!confirm(`Delete bill "${b?.name || 'this bill'}"?`)) return;
+billsSave(bills.filter(b => b.id !== id));
 billsRender();
 }
 async function billsRequestNotificationPermission() {
@@ -2010,12 +2017,38 @@ billsScheduleNotifications();
 } catch(e) {}
 }, 2000);
 let _lockPin = '';
-let _lockAttempts = 0;
 let _setPinStage = 'set';
 let _setPinFirst = '';
 let _setPinCurrent = '';
-function lockIsEnabled() { return !!lsGet('pf_lock_pin'); }
-function lockGetPin() { return lsGet('pf_lock_pin') || ''; }
+async function _pinDeriveHash(pin, saltB64) {
+const saltBytes = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+const baseKey = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
+const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt:saltBytes, iterations:100000, hash:'SHA-256'}, baseKey, 256);
+return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+async function _pinSet(pin) {
+const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+const saltB64 = btoa(String.fromCharCode(...saltBytes));
+const hashB64 = await _pinDeriveHash(pin, saltB64);
+lsSet('pf_lock_pin_hash', hashB64);
+lsSet('pf_lock_pin_salt', saltB64);
+lsDel('pf_lock_pin');
+}
+async function _pinVerify(pin) {
+const hash = lsGet('pf_lock_pin_hash');
+const salt = lsGet('pf_lock_pin_salt');
+if (hash && salt) {
+const computed = await _pinDeriveHash(pin, salt);
+return computed === hash;
+}
+const plain = lsGet('pf_lock_pin');
+if (plain && plain === pin) {
+await _pinSet(pin);
+return true;
+}
+return false;
+}
+function lockIsEnabled() { return !!(lsGet('pf_lock_pin_hash') || lsGet('pf_lock_pin')); }
 function lockBiometricEnabled() { return lsGet('pf_lock_bio') === '1'; }
 async function lockCheck() {
 if (!lockIsEnabled()) return;
@@ -2046,7 +2079,8 @@ el.style.transition = 'opacity .3s';
 el.style.opacity = '0';
 setTimeout(() => { el.style.display = 'none'; el.style.opacity = '1'; el.style.transition = ''; }, 300);
 }
-_lockAttempts = 0;
+lsDel('pf_lock_attempts');
+lsDel('pf_lock_locked_until');
 haptic('success');
 }
 async function lockBiometricUnlock() {
@@ -2084,20 +2118,34 @@ function lockPinPress(val) {
 const errEl = document.getElementById('lockError');
 if (errEl) errEl.textContent = '';
 if (val === 'bio') { lockBiometricUnlock(); return; }
+const lockedUntil = parseInt(lsGet('pf_lock_locked_until') || '0');
+if (lockedUntil > Date.now()) {
+const secs = Math.ceil((lockedUntil - Date.now()) / 1000);
+if (errEl) errEl.textContent = `Locked. Try again in ${secs}s.`;
+return;
+}
 if (val === 'del') { _lockPin = _lockPin.slice(0,-1); updatePinDots('pinDots', _lockPin.length); return; }
 if (_lockPin.length >= 4) return;
 _lockPin += val;
 updatePinDots('pinDots', _lockPin.length);
 haptic('light');
 if (_lockPin.length === 4) {
-setTimeout(() => {
-if (_lockPin === lockGetPin()) {
+const entered = _lockPin;
+setTimeout(async () => {
+const ok = await _pinVerify(entered);
+if (ok) {
 lockUnlock();
 } else {
-_lockAttempts++;
+const attempts = parseInt(lsGet('pf_lock_attempts') || '0') + 1;
+lsSet('pf_lock_attempts', String(attempts));
 _lockPin = '';
 updatePinDots('pinDots', 0, true);
-if (errEl) errEl.textContent = _lockAttempts >= 5 ? 'Too many attempts. Try again later.' : 'Incorrect PIN';
+if (attempts >= 5) {
+lsSet('pf_lock_locked_until', String(Date.now() + 60000));
+if (errEl) errEl.textContent = 'Too many attempts. Locked for 60 s.';
+} else {
+if (errEl) errEl.textContent = `Incorrect PIN (${attempts}/5)`;
+}
 haptic('error');
 }
 }, 100);
@@ -2148,11 +2196,14 @@ document.getElementById('setPinDesc').textContent = 'Enter your PIN again to con
 updatePinDots('setPinDots', 0);
 } else {
 if (_setPinCurrent === _setPinFirst) {
-lsSet('pf_lock_pin', _setPinCurrent);
+_pinSet(_setPinCurrent).then(() => {
 closePinModal();
 settingsRender();
 toast('PIN set! App will lock on next open.', false);
 haptic('success');
+}).catch(() => {
+toast('Could not save PIN. Try again.');
+});
 } else {
 _setPinCurrent = '';
 _setPinFirst = '';
@@ -2201,8 +2252,12 @@ toast('Could not enable biometrics: ' + e.message);
 }
 function lockDisable() {
 lsDel('pf_lock_pin');
+lsDel('pf_lock_pin_hash');
+lsDel('pf_lock_pin_salt');
 lsDel('pf_lock_bio');
 lsDel('pf_lock_bio_id');
+lsDel('pf_lock_attempts');
+lsDel('pf_lock_locked_until');
 sessionStorage.removeItem('pf_unlocked');
 settingsRender();
 toast('App lock disabled.', false);
@@ -2481,6 +2536,11 @@ window.scrollTo({top: 0, behavior: 'smooth'});
 const GECKO_IDS = {BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',ADA:'cardano',DOT:'polkadot',DOGE:'dogecoin',MATIC:'matic-network',LINK:'chainlink',AVAX:'avalanche-2',ATOM:'cosmos',LTC:'litecoin',UNI:'uniswap',TON:'the-open-network',SHIB:'shiba-inu',TRX:'tron',XLM:'stellar',ALGO:'algorand'};
 const COIN_EMOJI = {BTC:'₿',ETH:'🔷',BNB:'🟡',SOL:'◎',XRP:'💧',ADA:'🔵',DOT:'⚫',DOGE:'🐶',MATIC:'🟣',LINK:'🔗',AVAX:'🔺',ATOM:'⚛️',LTC:'Ł',UNI:'🦄',TON:'💎',SHIB:'🐕',TRX:'⚡',XLM:'⭐',ALGO:'◆'};
 async function fetchCryptoPrices(coins) {
+if (_isRateLimited('coingecko')) {
+const out = {};
+coins.forEach(c => out[c.toUpperCase()] = null);
+return out;
+}
 const ids = coins.map(c => encodeURIComponent(GECKO_IDS[c.toUpperCase()]||c.toLowerCase())).join(',');
 const urls = [
 `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=gbp&include_24hr_change=true`,
@@ -2490,10 +2550,14 @@ let data = null;
 for (const url of urls) {
 try {
 const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
+if (r.status === 429) { _setRateLimit('coingecko', parseInt(r.headers.get('Retry-After')) || 60); break; }
 if (r.ok) { data = await r.json(); break; }
 } catch {}
 }
-if (!data) throw new Error('Could not fetch crypto prices. Try again later.');
+if (!data) {
+if (_isRateLimited('coingecko')) throw new Error(`CoinGecko rate-limited. Try again in ${_rateLimitRemaining('coingecko')}s.`);
+throw new Error('Could not fetch crypto prices. Try again later.');
+}
 const results = {};
 coins.forEach(c => {
 const id = GECKO_IDS[c.toUpperCase()]||c.toLowerCase();
@@ -2844,6 +2908,39 @@ document.addEventListener('click', e => {
   }
 });
 
+const _ESC_CLOSEABLE_MODALS = ['setPinModal', 'proModal', 'logSpendModal'];
+const _FOCUS_TRAP_MODALS = ['setPinModal', 'proModal', 'logSpendModal', 'lockScreen'];
+function _openModalEl() {
+  for (const id of _FOCUS_TRAP_MODALS) {
+    const el = document.getElementById(id);
+    if (el && el.style.display && el.style.display !== 'none') return {id, el};
+  }
+  return null;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const open = _openModalEl();
+    if (open && _ESC_CLOSEABLE_MODALS.includes(open.id)) {
+      open.el.style.display = 'none';
+      if (open.id === 'setPinModal') closePinModal();
+      if (open.id === 'proModal') closeProModal();
+      e.preventDefault();
+    }
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  const open = _openModalEl();
+  if (!open) return;
+  const focusable = open.el.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+  if (!open.el.contains(active)) { e.preventDefault(); first.focus(); return; }
+  if (e.shiftKey && active === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus(); }
+});
+
 async function pfAdd() {
 if (atLimit('portfolio')) return showProModal(`Free plan includes ${FREE_LIMITS.portfolio} portfolio positions. Upgrade to Pro for unlimited.`);
 const sym=document.getElementById('pfSym').value.trim().toUpperCase();
@@ -2882,16 +2979,29 @@ btn.textContent='+ Add Position'; btn.disabled=false;
 async function pfRefreshAll() {
 const s = load();
 if (!s.positions.length) return;
+if (_isRateLimited('twelvedata')) return toast(`Rate-limited — try again in ${_rateLimitRemaining('twelvedata')}s.`);
 const btn = document.getElementById('pfRefreshBtn');
 btn.textContent = '…'; btn.disabled = true;
 try {
 const tickers = s.positions.map(p => p.sym);
 const prices = await fetchStockPrices(tickers);
+const missed = [];
 let updated = 0;
-tickers.forEach(t => { if (prices[t] != null) { s.prices[t] = prices[t]; updated++; } });
+tickers.forEach(t => {
+if (prices[t] != null) { s.prices[t] = prices[t]; updated++; }
+else missed.push(t);
+});
 s.pfLastRefresh = Date.now();
 save(s); pfRender();
-toast(updated ? `Updated ${updated} price${updated>1?'s':''}!` : 'Could not fetch prices. Check your API key in ⚙️ Settings.', !updated);
+if (_isRateLimited('twelvedata')) {
+toast(`Rate-limited after ${updated} update${updated===1?'':'s'} — try again in ${_rateLimitRemaining('twelvedata')}s.`);
+} else if (updated && missed.length) {
+toast(`Updated ${updated}, couldn't fetch: ${missed.slice(0,5).join(', ')}${missed.length>5?`, +${missed.length-5} more`:''}`);
+} else if (updated) {
+toast(`Updated ${updated} price${updated>1?'s':''}!`, false);
+} else {
+toast('Could not fetch prices. Check your API key in ⚙️ Settings.');
+}
 } catch(e) { toast('Refresh failed: '+e.message); }
 finally { btn.textContent = '↻ Refresh'; btn.disabled = false; }
 }
@@ -2905,6 +3015,7 @@ pfRender();
 }
 }
 function pfRemove(sym) {
+if (!confirm(`Remove ${sym} from your portfolio?`)) return;
 const s=load();
 s.positions=s.positions.filter(p=>p.sym!==sym);
 delete s.prices[sym];
@@ -3027,6 +3138,8 @@ save(s); bkRender();
 }
 function bkRemove(id) {
 const s=load();
+const a = (s.bankAccounts||[]).find(x=>x.id===id);
+if (!confirm(`Delete account "${a?.name || 'this account'}"?`)) return;
 s.bankAccounts=s.bankAccounts.filter(a=>a.id!==id);
 save(s); bkRender();
 }
@@ -3124,6 +3237,8 @@ save(s); ccRender();
 }
 function ccRemove(id) {
 const s=load();
+const c = (s.creditCards||[]).find(x=>x.id===id);
+if (!confirm(`Delete card "${c?.name || 'this card'}"?`)) return;
 s.creditCards=s.creditCards.filter(c=>c.id!==id);
 save(s); ccRender();
 }
@@ -3237,6 +3352,7 @@ btn.textContent='+ Add Coin'; btn.disabled=false;
 async function crRefreshAll() {
 const s=load();
 if(!(s.crypto||[]).length) return;
+if (_isRateLimited('coingecko')) return toast(`Rate-limited — try again in ${_rateLimitRemaining('coingecko')}s.`);
 const btn=document.getElementById('crRefreshBtn');
 btn.textContent='…'; btn.disabled=true;
 try {
@@ -3252,6 +3368,7 @@ else toast('Prices updated!',false);
 btn.textContent='↻ Refresh'; btn.disabled=false;
 }
 function crRemove(sym) {
+if (!confirm(`Remove ${sym} from your crypto holdings?`)) return;
 const s=load();
 s.crypto=s.crypto.filter(h=>h.symbol!==sym);
 delete (s.cryptoPrices||{})[sym];
@@ -3469,6 +3586,8 @@ save(s); loansRender();
 }
 function lnRemove(id) {
 const s=load();
+const l = (s.loans||[]).find(x=>x.id===id);
+if (!confirm(`Delete loan "${l?.name || 'this loan'}"?`)) return;
 s.loans=s.loans.filter(l=>l.id!==id);
 save(s); loansRender();
 }
@@ -3866,18 +3985,20 @@ const results = {};
 await Promise.all(tickers.map(async sym => {
 let price = null;
 const isIntl = sym.includes('.');
-if (isIntl && avKey) {
+if (isIntl && avKey && !_isRateLimited('alphavantage')) {
 try {
 const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(avKey)}`;
 const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
-if (r.ok) {
+if (r.status === 429) {
+_setRateLimit('alphavantage', parseInt(r.headers.get('Retry-After')) || 60);
+} else if (r.ok) {
 const d = await r.json();
 const p = d?.['Global Quote']?.['05. price'];
 if (p) price = parseFloat(p);
 }
 } catch {}
 }
-if (price == null && tdKey) {
+if (price == null && tdKey && !_isRateLimited('twelvedata')) {
 const url = `https://api.twelvedata.com/price?symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(tdKey)}`;
 const proxies = [
 [`https://corsproxy.io/?${encodeURIComponent(url)}`, r => r.json()],
@@ -3887,8 +4008,12 @@ const proxies = [
 for (const [proxyUrl, parse] of proxies) {
 try {
 const r = await fetch(proxyUrl, {signal: AbortSignal.timeout(6000)});
+if (r.status === 429) { _setRateLimit('twelvedata', parseInt(r.headers.get('Retry-After')) || 60); break; }
 if (!r.ok) continue;
 const d = await parse(r);
+if (d?.status === 'error' && /rate limit|too many/i.test(d.message || '')) {
+_setRateLimit('twelvedata', 60); break;
+}
 if (d?.price) { price = parseFloat(d.price); break; }
 } catch {}
 }
@@ -4047,6 +4172,8 @@ save(s); pensionRender();
 }
 function pensionRemove(id) {
 const s = load();
+const p = (s.pensions||[]).find(x=>x.id===id);
+if (!confirm(`Delete pension "${p?.name || 'this pension'}"?`)) return;
 s.pensions = s.pensions.filter(p => p.id!==id);
 save(s); pensionRender();
 }
@@ -4120,6 +4247,8 @@ save(s); propertyRender();
 }
 function propertyRemove(id) {
 const s = load();
+const p = (s.properties||[]).find(x=>x.id===id);
+if (!confirm(`Delete property "${p?.name || 'this property'}"?`)) return;
 s.properties = s.properties.filter(p => p.id!==id);
 save(s); propertyRender();
 }
@@ -4201,6 +4330,8 @@ subRender();
 }
 function budgetRemoveSub(i) {
 const s = load();
+const sub = s.budget?.subscriptions?.[i];
+if (!confirm(`Delete subscription "${sub?.name || 'this subscription'}"?`)) return;
 s.budget.subscriptions.splice(i, 1);
 save(s); subRender();
 }
@@ -4531,6 +4662,8 @@ budgetRender();
 }
 function budgetRemoveCat(id) {
 const s = load();
+const c = (s.budget?.categories||[]).find(x=>x.id===id);
+if (!confirm(`Delete category "${c?.name || 'this category'}"?\nAll logged spending in this category will also be removed.`)) return;
 s.budget.categories = s.budget.categories.filter(c=>c.id!==id);
 save(s); budgetRender();
 }
@@ -4792,23 +4925,43 @@ toast('Backup downloaded!', false);
 function settingsImport() {
 document.getElementById('importFile').click();
 }
+const IMPORT_EXPECTED_KEYS = ['positions','bankAccounts','creditCards','crypto','loans','pensions','properties','budget','bills','nwHistory','prices','cryptoPrices','cash'];
 function settingsDoImport(input) {
 const file = input.files[0];
 if (!file) return;
 const reader = new FileReader();
 reader.onload = e => {
-try {
-const data = JSON.parse(e.target.result);
-const json = JSON.stringify(data);
-_s[SK] = json;
+let data;
+try { data = JSON.parse(e.target.result); }
+catch { toast('Invalid backup file.'); return; }
+if (!data || typeof data !== 'object' || Array.isArray(data)) {
+toast('Invalid backup file.'); return;
+}
+if (!IMPORT_EXPECTED_KEYS.some(k => k in data)) {
+toast('File does not look like a Wealthr backup.'); return;
+}
+const current = _s[SK];
+if (current) {
+try { localStorage.setItem('__pf_last_backup', current); } catch {}
+}
+_s[SK] = JSON.stringify(data);
 try { localStorage.setItem('__pf_all', JSON.stringify(_s)); } catch {}
+console.log('Previous data saved. Run wealthrRevertImport() in the console to restore.');
 toast('Data restored! Reloading…', false);
 setTimeout(() => location.reload(), 1500);
-} catch { toast('Invalid backup file.'); }
 };
 reader.readAsText(file);
 input.value = '';
 }
+window.wealthrRevertImport = function() {
+const backup = localStorage.getItem('__pf_last_backup');
+if (!backup) { console.warn('No backup available to revert to.'); return; }
+_s[SK] = backup;
+try { localStorage.setItem('__pf_all', JSON.stringify(_s)); } catch {}
+localStorage.removeItem('__pf_last_backup');
+console.log('Reverted. Reloading…');
+setTimeout(() => location.reload(), 500);
+};
 function settingsClearData() {
 if (!confirm('Are you sure? This will delete ALL your data and cannot be undone.')) return;
 lsDel(SK);
