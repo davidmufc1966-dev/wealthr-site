@@ -1,6 +1,12 @@
-const CACHE = "wealthr-v11";
+const CACHE = "wealthr-v12";
 
-self.addEventListener("install", e => { self.skipWaiting(); });
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.addAll(["/offline.html"]))
+      .then(() => self.skipWaiting())
+  );
+});
 
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys =>
@@ -10,17 +16,22 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
-  if (e.request.url.includes("coingecko") || e.request.url.includes("blockstream") ||
-      e.request.url.includes("fonts.google") || e.request.url.includes("twelvedata") ||
-      e.request.url.includes("allorigins") || e.request.url.includes("corsproxy") ||
-      e.request.url.includes("er-api")) {
-    e.respondWith(fetch(e.request).catch(() => caches.match('/offline.html')));
+  const req = e.request;
+  if (req.method !== "GET" || !req.url.startsWith("http")) return;
+  if (req.url.includes("coingecko") || req.url.includes("blockstream") ||
+      req.url.includes("fonts.google") || req.url.includes("twelvedata") ||
+      req.url.includes("allorigins") || req.url.includes("corsproxy") ||
+      req.url.includes("er-api")) {
+    e.respondWith(fetch(req).catch(() => caches.match('/offline.html')));
   } else {
     e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-        caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+      caches.match(req).then(cached => cached || fetch(req).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(req, clone));
+        }
         return res;
-      }))
+      }).catch(() => caches.match('/offline.html')))
     );
   }
 });
