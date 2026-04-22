@@ -401,7 +401,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
     <div style="font-size:11px;color:#555;margin-bottom:40px;letter-spacing:.1em;text-transform:uppercase">Your data is locked</div>
 
     <div id="lockBiometricWrap">
-      <button id="lockFingerprintBtn" onclick="lockBiometricUnlock()" style="width:80px;height:80px;border-radius:50%;background:rgba(0,230,118,0.08);border:2px solid rgba(0,230,118,0.3);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;margin:0 auto 14px;transition:all .2s;box-shadow:0 0 0 0 rgba(0,230,118,0.3)" id="fpBtn">
+      <button id="lockFingerprintBtn" aria-label="Unlock with fingerprint" onclick="lockBiometricUnlock()" style="width:80px;height:80px;border-radius:50%;background:rgba(0,230,118,0.08);border:2px solid rgba(0,230,118,0.3);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;margin:0 auto 14px;transition:all .2s;box-shadow:0 0 0 0 rgba(0,230,118,0.3)" id="fpBtn">
         👆
       </button>
       <div style="font-size:11px;color:#555;margin-bottom:28px">Touch to unlock</div>
@@ -423,9 +423,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         <button onclick="lockPinPress('7')" class="pin-btn">7</button>
         <button onclick="lockPinPress('8')" class="pin-btn">8</button>
         <button onclick="lockPinPress('9')" class="pin-btn">9</button>
-        <button onclick="lockPinPress('bio')" class="pin-btn" id="pinBioBtn" style="font-size:20px">👆</button>
+        <button onclick="lockPinPress('bio')" class="pin-btn" id="pinBioBtn" aria-label="Unlock with fingerprint" style="font-size:20px">👆</button>
         <button onclick="lockPinPress('0')" class="pin-btn">0</button>
-        <button onclick="lockPinPress('del')" class="pin-btn" style="font-size:18px">⌫</button>
+        <button onclick="lockPinPress('del')" class="pin-btn" aria-label="Delete digit" style="font-size:18px">⌫</button>
       </div>
     </div>
 
@@ -452,7 +452,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <button onclick="setPinPress('9')" class="pin-btn">9</button>
       <div></div>
       <button onclick="setPinPress('0')" class="pin-btn">0</button>
-      <button onclick="setPinPress('del')" class="pin-btn" style="font-size:18px">⌫</button>
+      <button onclick="setPinPress('del')" class="pin-btn" aria-label="Delete digit" style="font-size:18px">⌫</button>
     </div>
     <button onclick="closePinModal()" style="font-size:11px;color:#555;background:none;border:none;cursor:pointer;margin-top:4px">Cancel</button>
   </div>
@@ -466,7 +466,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#ffd166;margin-bottom:6px">✨ Wealthr Pro</div>
         <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;line-height:1.1">Unlock <em style="color:#ffd166">everything</em></div>
       </div>
-      <button onclick="closeProModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;color:#888;flex-shrink:0">✕</button>
+      <button aria-label="Close" onclick="closeProModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;color:#888;flex-shrink:0">✕</button>
     </div>
 
     <div id="proModalReason" style="font-size:12px;color:#888;background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.15);border-radius:10px;padding:10px 14px;margin-bottom:20px;line-height:1.6"></div>
@@ -492,7 +492,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
 
     <button onclick="activatePro()" style="width:100%;padding:16px;background:linear-gradient(135deg,#ffd166,#f7931a);color:#000;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;margin-bottom:12px">✨ Upgrade to Pro — £1.49/mo</button>
     <div style="text-align:center">
-      <input id="proCodeInput" placeholder="Have a promo code?" style="background:transparent;border:none;border-bottom:1px solid #2a2a2a;color:#555;font-size:11px;text-align:center;outline:none;padding:4px 8px;font-family:'IBM Plex Mono',monospace;width:180px"/>
+      <input id="proCodeInput" aria-label="Promo code" placeholder="Have a promo code?" style="background:transparent;border:none;border-bottom:1px solid #2a2a2a;color:#555;font-size:11px;text-align:center;outline:none;padding:4px 8px;font-family:'IBM Plex Mono',monospace;width:180px"/>
       <button onclick="activatePro()" style="background:none;border:none;color:#4d9fff;font-size:11px;cursor:pointer;margin-left:6px">Apply</button>
     </div>
   </div>
@@ -613,12 +613,12 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         <div class="card-title">Add Position</div>
         <div class="form-grid">
           <div>
-            <label class="lbl">Ticker</label>
+            <label class="lbl" for="pfSym">Ticker</label>
             <input class="inp" id="pfSym" placeholder="AAPL or BARC:LSE" maxlength="12" oninput="pfTickerSuggest(this.value)"/>
             <div id="pfTickerSuggestions" style="display:none;position:absolute;z-index:200;background:#111;border:1px solid #2a2a2a;border-radius:8px;margin-top:4px;max-height:200px;overflow-y:auto;width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.5)"></div>
           </div>
-          <div><label class="lbl">Shares</label><input class="inp" type="number" id="pfShares" placeholder="10" min="0" step="any"/></div>
-          <div><label class="lbl">Avg Cost ($)</label><input class="inp" type="number" id="pfCost" placeholder="150.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="pfShares">Shares</label><input class="inp" type="number" id="pfShares" placeholder="10" min="0" step="any"/></div>
+          <div><label class="lbl" for="pfCost">Avg Cost ($)</label><input class="inp" type="number" id="pfCost" placeholder="150.00" min="0" step="any"/></div>
         </div>
         <button class="btn-add btn-green" id="pfAddBtn" onclick="pfAdd()">+ Add Position</button>
       </div>
@@ -630,7 +630,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         <div style="display:flex;align-items:center;gap:8px">
           <button id="btnGBP" onclick="pfSetCurrency('GBP')" style="padding:3px 8px;border-radius:4px;border:1px solid #2a2a2a;background:rgba(77,159,255,.2);color:#4d9fff;font-size:10px;cursor:pointer;font-family:'IBM Plex Mono',monospace">GBP</button>
           <button id="btnUSD" onclick="pfSetCurrency('USD')" style="padding:3px 8px;border-radius:4px;border:1px solid #2a2a2a;background:#111;color:#555;font-size:10px;cursor:pointer;font-family:'IBM Plex Mono',monospace">USD</button>
-          <select id="pfSort" onchange="pfRender()" style="background:#111;border:1px solid #2a2a2a;color:#888;padding:4px 8px;border-radius:6px;font-size:10px;font-family:'IBM Plex Mono',monospace">
+          <select id="pfSort" aria-label="Sort holdings" onchange="pfRender()" style="background:#111;border:1px solid #2a2a2a;color:#888;padding:4px 8px;border-radius:6px;font-size:10px;font-family:'IBM Plex Mono',monospace">
             <option value="value">By Value</option>
             <option value="return">By Return %</option>
             <option value="name">By Name</option>
@@ -646,7 +646,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="cash-row" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px">
         <span class="cash-lbl">Uninvested Cash</span>
         <span style="color:#555" id="pfCashSymbol">£</span>
-        <input type="number" id="pfCash" placeholder="0.00" min="0" step="any" oninput="pfSaveCash()"/>
+        <input type="number" id="pfCash" aria-label="Cash balance" placeholder="0.00" min="0" step="any" oninput="pfSaveCash()"/>
       </div>
     </div>
     <div class="disc">For personal tracking only — not financial advice.</div>
@@ -662,9 +662,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Account</div>
         <div class="form-grid">
-          <div><label class="lbl">Account Name</label><input class="inp" id="bkName" placeholder="Main Account"/></div>
+          <div><label class="lbl" for="bkName">Account Name</label><input class="inp" id="bkName" placeholder="Main Account"/></div>
           <div style="position:relative">
-          <label class="lbl">Bank</label>
+          <label class="lbl" for="bkBank">Bank</label>
           <select class="inp" id="bkBank">
             <option value="">Select a bank…</option>
             <optgroup label="High Street">
@@ -720,15 +720,15 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
             </optgroup>
           </select>
         </div>
-          <div><label class="lbl">Type</label>
+          <div><label class="lbl" for="bkType">Type</label>
             <select class="inp" id="bkType">
               <option>Current</option><option>Savings</option><option>ISA</option>
               <option>Cash ISA</option><option>Fixed Term</option><option>Other</option>
             </select>
           </div>
-          <div><label class="lbl" id="lbl-bkBal">Balance <span id="lbl-bkBal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bkBal" placeholder="5000.00" min="0" step="any"/></div>
-          <div><label class="lbl">Interest Rate %</label><input class="inp" type="number" id="bkRate" placeholder="4.5" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-bkGoal">Savings Goal <span id="lbl-bkGoal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bkGoal" placeholder="10000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="bkBal" id="lbl-bkBal">Balance <span id="lbl-bkBal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bkBal" placeholder="5000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="bkRate">Interest Rate %</label><input class="inp" type="number" id="bkRate" placeholder="4.5" min="0" step="any"/></div>
+          <div><label class="lbl" for="bkGoal" id="lbl-bkGoal">Savings Goal <span id="lbl-bkGoal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bkGoal" placeholder="10000.00" min="0" step="any"/></div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin:10px 0;cursor:pointer" onclick="this.querySelector('input').click();this.querySelector('.chk-box').style.background=this.querySelector('input').checked?'#00e676':'transparent';this.querySelector('.chk-tick').style.display=this.querySelector('input').checked?'block':'none'">
           <input type="checkbox" id="bkFscs" checked style="display:none"/>
@@ -758,8 +758,8 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Credit Card</div>
         <div class="form-grid">
-          <div><label class="lbl">Card Name</label><input class="inp" id="ccName" placeholder="Rewards Card"/></div>
-          <div><label class="lbl">Provider</label>
+          <div><label class="lbl" for="ccName">Card Name</label><input class="inp" id="ccName" placeholder="Rewards Card"/></div>
+          <div><label class="lbl" for="ccProv">Provider</label>
           <select class="inp" id="ccProv">
             <option value="">Select provider…</option>
             <optgroup label="Major Cards">
@@ -791,10 +791,10 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
             </optgroup>
           </select>
         </div>
-          <div><label class="lbl" id="lbl-ccBal">Balance Owed <span id="lbl-ccBal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="ccBal" placeholder="500.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-ccLim">Credit Limit <span id="lbl-ccLim-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="ccLim" placeholder="3000.00" min="0" step="any"/></div>
-          <div><label class="lbl">APR %</label><input class="inp" type="number" id="ccApr" placeholder="24.9" min="0" step="any"/></div>
-          <div><label class="lbl">Due Date</label><input class="inp" type="date" id="ccDue" style="color-scheme:dark"/></div>
+          <div><label class="lbl" for="ccBal" id="lbl-ccBal">Balance Owed <span id="lbl-ccBal-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="ccBal" placeholder="500.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="ccLim" id="lbl-ccLim">Credit Limit <span id="lbl-ccLim-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="ccLim" placeholder="3000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="ccApr">APR %</label><input class="inp" type="number" id="ccApr" placeholder="24.9" min="0" step="any"/></div>
+          <div><label class="lbl" for="ccDue">Due Date</label><input class="inp" type="date" id="ccDue" style="color-scheme:dark"/></div>
         </div>
         <button class="btn-add btn-red" onclick="ccAdd()">+ Add Card</button>
       </div>
@@ -815,9 +815,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Cryptocurrency</div>
         <div class="form-grid">
-          <div><label class="lbl">Coin Symbol</label><input class="inp" id="crSym" placeholder="BTC" maxlength="10" oninput="this.value=this.value.toUpperCase()"/></div>
-          <div><label class="lbl">Amount Held</label><input class="inp" type="number" id="crAmt" placeholder="0.5" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-crCost">Avg Buy Price <span id="lbl-crCost-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="crCost" placeholder="40000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="crSym">Coin Symbol</label><input class="inp" id="crSym" placeholder="BTC" maxlength="10" oninput="this.value=this.value.toUpperCase()"/></div>
+          <div><label class="lbl" for="crAmt">Amount Held</label><input class="inp" type="number" id="crAmt" placeholder="0.5" min="0" step="any"/></div>
+          <div><label class="lbl" for="crCost" id="lbl-crCost">Avg Buy Price <span id="lbl-crCost-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="crCost" placeholder="40000.00" min="0" step="any"/></div>
         </div>
         <button class="btn-add btn-purple" id="crAddBtn" onclick="crAdd()">+ Add Coin</button>
         <div style="margin-top:10px;font-size:11px;color:#444">Popular: BTC · ETH · SOL · BNB · XRP · DOGE · ADA · AVAX</div>
@@ -852,7 +852,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         <div style="font-size:11px;color:#555;margin-bottom:10px">Filter news by your tickers — highlighted in blue when matched.</div>
         <div class="watchlist-chips" id="wlChips"></div>
         <div class="wl-add-row">
-          <input id="wlInput" placeholder="Add ticker e.g. AAPL" maxlength="10" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')wlAdd()"/>
+          <input id="wlInput" aria-label="Add ticker to watchlist" placeholder="Add ticker e.g. AAPL" maxlength="10" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')wlAdd()"/>
           <button onclick="wlAdd()">+ Add</button>
         </div>
       </div>
@@ -869,8 +869,8 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Pension</div>
         <div class="form-grid">
-          <div><label class="lbl">Pension Name</label><input class="inp" id="pnName" placeholder="Workplace Pension"/></div>
-          <div><label class="lbl">Provider</label>
+          <div><label class="lbl" for="pnName">Pension Name</label><input class="inp" id="pnName" placeholder="Workplace Pension"/></div>
+          <div><label class="lbl" for="pnProvider">Provider</label>
           <select class="inp" id="pnProvider">
             <option value="">Select provider…</option>
             <optgroup label="Workplace Pensions">
@@ -907,7 +907,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
             <option>Other</option>
           </select>
         </div>
-          <div><label class="lbl">Type</label>
+          <div><label class="lbl" for="pnType">Type</label>
             <select class="inp" id="pnType">
               <option>Workplace (Defined Contribution)</option>
               <option>Defined Benefit (Final Salary)</option>
@@ -916,14 +916,14 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
               <option>Other</option>
             </select>
           </div>
-          <div><label class="lbl" id="lbl-pnValue">Current Value <span id="lbl-pnValue-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnValue" placeholder="25000.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-pnContrib">Monthly Contribution <span id="lbl-pnContrib-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnContrib" placeholder="200.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-pnEmployer">Employer Contribution <span id="lbl-pnEmployer-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnEmployer" placeholder="100.00" min="0" step="any"/></div>
-          <div><label class="lbl">Your Current Age</label><input class="inp" type="number" id="pnAge" placeholder="35" min="16" max="80" step="1"/></div>
-          <div><label class="lbl">Retirement Age</label><input class="inp" type="number" id="pnRetAge" placeholder="67" min="50" max="90" step="1"/></div>
-          <div><label class="lbl">Annual Growth Rate %</label><input class="inp" type="number" id="pnGrowth" placeholder="5" min="0" max="20" step="0.5"/></div>
-          <div><label class="lbl" id="lbl-pnTarget">Target Pot <span id="lbl-pnTarget-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnTarget" placeholder="500000.00" min="0" step="any"/></div>
-          <div><label class="lbl">Your Tax Rate</label>
+          <div><label class="lbl" for="pnValue" id="lbl-pnValue">Current Value <span id="lbl-pnValue-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnValue" placeholder="25000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="pnContrib" id="lbl-pnContrib">Monthly Contribution <span id="lbl-pnContrib-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnContrib" placeholder="200.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="pnEmployer" id="lbl-pnEmployer">Employer Contribution <span id="lbl-pnEmployer-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnEmployer" placeholder="100.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="pnAge">Your Current Age</label><input class="inp" type="number" id="pnAge" placeholder="35" min="16" max="80" step="1"/></div>
+          <div><label class="lbl" for="pnRetAge">Retirement Age</label><input class="inp" type="number" id="pnRetAge" placeholder="67" min="50" max="90" step="1"/></div>
+          <div><label class="lbl" for="pnGrowth">Annual Growth Rate %</label><input class="inp" type="number" id="pnGrowth" placeholder="5" min="0" max="20" step="0.5"/></div>
+          <div><label class="lbl" for="pnTarget" id="lbl-pnTarget">Target Pot <span id="lbl-pnTarget-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="pnTarget" placeholder="500000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="pnTaxRate">Your Tax Rate</label>
             <select class="inp" id="pnTaxRate">
               <option value="20">Basic Rate (20%)</option>
               <option value="40">Higher Rate (40%)</option>
@@ -951,9 +951,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Property</div>
         <div class="form-grid">
-          <div><label class="lbl">Property Name</label><input class="inp" id="prName" placeholder="Main Residence"/></div>
-          <div><label class="lbl">Address</label><input class="inp" id="prAddress" placeholder="123 Example St"/></div>
-          <div><label class="lbl">Type</label>
+          <div><label class="lbl" for="prName">Property Name</label><input class="inp" id="prName" placeholder="Main Residence"/></div>
+          <div><label class="lbl" for="prAddress">Address</label><input class="inp" id="prAddress" placeholder="123 Example St"/></div>
+          <div><label class="lbl" for="prType">Type</label>
             <select class="inp" id="prType">
               <option>Main Residence</option>
               <option>Buy to Let</option>
@@ -963,9 +963,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
               <option>Other</option>
             </select>
           </div>
-          <div><label class="lbl" id="lbl-prValue">Current Value <span id="lbl-prValue-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prValue" placeholder="250000.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-prMortgage">Mortgage Remaining <span id="lbl-prMortgage-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prMortgage" placeholder="150000.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-prRent">Monthly Rent Income <span id="lbl-prRent-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prRent" placeholder="0.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="prValue" id="lbl-prValue">Current Value <span id="lbl-prValue-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prValue" placeholder="250000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="prMortgage" id="lbl-prMortgage">Mortgage Remaining <span id="lbl-prMortgage-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prMortgage" placeholder="150000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="prRent" id="lbl-prRent">Monthly Rent Income <span id="lbl-prRent-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="prRent" placeholder="0.00" min="0" step="any"/></div>
         </div>
         <button class="btn-add" style="background:#00e676;color:#000" onclick="propertyAdd()">+ Add Property</button>
       </div>
@@ -980,7 +980,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card-title">🏠 Land Registry Lookup</div>
       <div style="font-size:11px;color:#555;margin-bottom:12px">Search recent sold prices by postcode from Land Registry.</div>
       <div style="display:flex;gap:8px;margin-bottom:10px">
-        <input class="inp" id="lrPostcode" placeholder="e.g. SW1A 1AA" style="flex:1"/>
+        <input class="inp" id="lrPostcode" aria-label="Postcode" placeholder="e.g. SW1A 1AA" style="flex:1"/>
         <button class="btn-add btn-green" style="width:auto;padding:10px 14px;margin:0" onclick="lrLookup()">Search</button>
       </div>
       <div id="lrResults"></div>
@@ -990,9 +990,9 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
   <div class="panel" id="panel-budget">
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0">
-      <button onclick="budgetPrevMonth()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:16px">‹</button>
+      <button aria-label="Previous month" onclick="budgetPrevMonth()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:16px">‹</button>
       <div id="budgetMonthLabel" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;text-align:center"></div>
-      <button onclick="budgetNextMonth()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:16px">›</button>
+      <button aria-label="Next month" onclick="budgetNextMonth()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:16px">›</button>
     </div>
 
     <div style="text-align:center;padding:16px 0 10px">
@@ -1013,16 +1013,16 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
     <div id="subFormWrap" style="display:none">
       <div class="card" style="margin-bottom:10px">
         <div class="form-grid" id="subForm">
-          <div><label class="lbl">Name</label><input class="inp" id="subName" placeholder="Netflix"/></div>
-          <div><label class="lbl" id="lbl-subAmount">Amount <span id="lbl-subAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="subAmount" placeholder="10.99" min="0" step="any"/></div>
-          <div><label class="lbl">Billing</label>
+          <div><label class="lbl" for="subName">Name</label><input class="inp" id="subName" placeholder="Netflix"/></div>
+          <div><label class="lbl" for="subAmount" id="lbl-subAmount">Amount <span id="lbl-subAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="subAmount" placeholder="10.99" min="0" step="any"/></div>
+          <div><label class="lbl" for="subBilling">Billing</label>
             <select class="inp" id="subBilling">
               <option value="monthly">Monthly</option>
               <option value="annual">Annual</option>
               <option value="weekly">Weekly</option>
             </select>
           </div>
-          <div><label class="lbl">Category</label>
+          <div><label class="lbl" for="subIcon">Category</label>
             <select class="inp" id="subIcon" style="font-size:15px">
               <option value="🎬">🎬 Streaming / Video</option>
               <option value="🎵">🎵 Music</option>
@@ -1053,8 +1053,8 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card" style="margin-bottom:12px">
         <div class="card-title">Add Budget Category</div>
         <div class="form-grid">
-          <div><label class="lbl">Category</label><input class="inp" id="bgCat" placeholder="Groceries"/></div>
-          <div><label class="lbl">Icon</label>
+          <div><label class="lbl" for="bgCat">Category</label><input class="inp" id="bgCat" placeholder="Groceries"/></div>
+          <div><label class="lbl" for="bgIcon">Icon</label>
             <select class="inp" id="bgIcon" style="font-size:16px">
               <option value="🛒">🛒 Groceries</option>
               <option value="🍔">🍔 Food & Dining</option>
@@ -1084,7 +1084,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
               <option value="💰">💰 Savings</option>
             </select>
           </div>
-          <div><label class="lbl" id="lbl-bgLimit">Monthly Limit <span id="lbl-bgLimit-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bgLimit" placeholder="300.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="bgLimit" id="lbl-bgLimit">Monthly Limit <span id="lbl-bgLimit-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bgLimit" placeholder="300.00" min="0" step="any"/></div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin:8px 0;cursor:pointer" onclick="toggleOneOff()">
           <div id="bgOneOffChk" style="width:18px;height:18px;border:2px solid #ffd166;border-radius:4px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s">
@@ -1106,11 +1106,11 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div style="background:#0f0f1a;border-radius:20px 20px 0 0;padding:24px 24px calc(90px + env(safe-area-inset-bottom, 0px));width:100%;border-top:1px solid rgba(255,255,255,0.1)">
         <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:16px">💸 Log Spending</div>
         <div class="form-grid">
-          <div><label class="lbl">Category</label>
+          <div><label class="lbl" for="bgSpendCat">Category</label>
             <select class="inp" id="bgSpendCat"></select>
           </div>
-          <div><label class="lbl" id="lbl-bgAmount">Amount <span id="lbl-bgAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bgAmount" placeholder="25.00" min="0" step="any"/></div>
-          <div><label class="lbl">Note</label><input class="inp" id="bgNote" placeholder="e.g. Tesco, Costa, Petrol…"/></div>
+          <div><label class="lbl" for="bgAmount" id="lbl-bgAmount">Amount <span id="lbl-bgAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="bgAmount" placeholder="25.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="bgNote">Note</label><input class="inp" id="bgNote" placeholder="e.g. Tesco, Costa, Petrol…"/></div>
         </div>
 
         <div style="display:flex;gap:10px;margin-top:12px">
@@ -1129,12 +1129,12 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
     <div class="card" id="billAddForm" style="display:none;margin-bottom:14px">
       <div class="card-title">Add a Bill</div>
       <div class="form-grid">
-        <div><label class="lbl">Bill Name</label><input class="inp" id="billName" placeholder="e.g. Sky TV"/></div>
-        <div><label class="lbl" id="lbl-billAmount">Amount <span id="lbl-billAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" id="billAmount" type="number" placeholder="14.99" min="0" step="0.01"/></div>
+        <div><label class="lbl" for="billName">Bill Name</label><input class="inp" id="billName" placeholder="e.g. Sky TV"/></div>
+        <div><label class="lbl" for="billAmount" id="lbl-billAmount">Amount <span id="lbl-billAmount-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" id="billAmount" type="number" placeholder="14.99" min="0" step="0.01"/></div>
       </div>
       <div class="form-grid">
         <div>
-          <label class="lbl">Billing Cycle</label>
+          <label class="lbl" for="billCycle">Billing Cycle</label>
           <select class="inp" id="billCycle">
             <option value="monthly">Monthly (same date)</option>
             <option value="4weekly">Every 4 weeks</option>
@@ -1143,11 +1143,11 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
             <option value="annually">Annually</option>
           </select>
         </div>
-        <div><label class="lbl">Next Due Date</label><input class="inp" id="billDue" type="date"/></div>
+        <div><label class="lbl" for="billDue">Next Due Date</label><input class="inp" id="billDue" type="date"/></div>
       </div>
       <div class="form-grid">
         <div>
-          <label class="lbl">Category</label>
+          <label class="lbl" for="billCat">Category</label>
           <select class="inp" id="billCat">
             <option value="📺 Entertainment">📺 Entertainment</option>
             <option value="🏠 Housing">🏠 Housing</option>
@@ -1160,7 +1160,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
           </select>
         </div>
         <div>
-          <label class="lbl">Remind me</label>
+          <label class="lbl" for="billRemindDays">Remind me</label>
           <select class="inp" id="billRemindDays">
             <option value="1">1 day before</option>
             <option value="3" selected>3 days before</option>
@@ -1385,7 +1385,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card-title">App Name</div>
       <p style="font-size:11px;color:#555;margin-bottom:12px">Personalise the app header with your name.</p>
       <div style="display:flex;gap:8px">
-        <input class="inp" id="settingsAppName" placeholder="Wealthr" style="flex:1"/>
+        <input class="inp" id="settingsAppName" aria-label="Custom app name" placeholder="Wealthr" style="flex:1"/>
         <button onclick="settingsSaveAppName()" style="padding:8px 14px;background:#4d9fff;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer">Save</button>
       </div>
     </div>
@@ -1443,7 +1443,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
     <div class="card">
       <div class="card-title">Base Currency</div>
       <p style="font-size:11px;color:#555;line-height:1.7;margin-bottom:12px">All values will display in your chosen currency.</p>
-      <input id="currencySearch" type="text" placeholder="Search currency e.g. USD, Euro…" oninput="currencyRender()" style="width:100%;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;font-size:12px;color:#f0f0f0;outline:none;font-family:'IBM Plex Mono',monospace;margin-bottom:10px;box-sizing:border-box"/>
+      <input id="currencySearch" type="text" aria-label="Search currency" placeholder="Search currency e.g. USD, Euro…" oninput="currencyRender()" style="width:100%;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;font-size:12px;color:#f0f0f0;outline:none;font-family:'IBM Plex Mono',monospace;margin-bottom:10px;box-sizing:border-box"/>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:220px;overflow-y:auto" id="currencyGrid"></div>
 
     </div>
@@ -1454,7 +1454,7 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
         US stocks — free at <a href="https://twelvedata.com" target="_blank" style="color:#4d9fff">twelvedata.com</a> — 800 requests/day, no card needed.
       </p>
       <div style="display:flex;gap:8px">
-        <input type="password" id="settingsApiKey" placeholder="Your Twelve Data API key…" style="flex:1;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;font-size:12px;color:#f0f0f0;outline:none;font-family:'IBM Plex Mono',monospace"/>
+        <input type="password" id="settingsApiKey" aria-label="Twelve Data API key" placeholder="Your Twelve Data API key…" style="flex:1;padding:8px 10px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;font-size:12px;color:#f0f0f0;outline:none;font-family:'IBM Plex Mono',monospace"/>
         <button onclick="settingsSaveKey()" style="padding:8px 14px;background:#00e676;color:#000;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">Save</button>
       </div>
       <div id="settingsKeyStatus" style="margin-top:8px;font-size:11px;color:#555"></div>
@@ -1547,18 +1547,18 @@ tr td:first-child::after{content:'← swipe to delete';position:absolute;right:8
       <div class="card">
         <div class="card-title">Add Loan or Debt</div>
         <div class="form-grid">
-          <div><label class="lbl">Name</label><input class="inp" id="lnName" placeholder="Car Finance"/></div>
-          <div><label class="lbl">Type</label>
+          <div><label class="lbl" for="lnName">Name</label><input class="inp" id="lnName" placeholder="Car Finance"/></div>
+          <div><label class="lbl" for="lnType">Type</label>
             <select class="inp" id="lnType">
               <option>Car Finance</option><option>Personal Loan</option><option>Student Loan</option>
               <option>Mortgage</option><option>Buy Now Pay Later</option><option>Overdraft</option><option>Other</option>
             </select>
           </div>
-          <div><label class="lbl" id="lbl-lnOwed">Total Owed <span id="lbl-lnOwed-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnOwed" placeholder="5000.00" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-lnOrig">Original Amount <span id="lbl-lnOrig-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnOrig" placeholder="8000.00" min="0" step="any"/></div>
-          <div><label class="lbl">Interest Rate %</label><input class="inp" type="number" id="lnRate" placeholder="6.9" min="0" step="any"/></div>
-          <div><label class="lbl" id="lbl-lnPayment">Monthly Payment <span id="lbl-lnPayment-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnPayment" placeholder="200.00" min="0" step="any"/></div>
-          <div><label class="lbl">End Date (optional)</label><input class="inp" type="date" id="lnEndDate" style="color-scheme:dark"/></div>
+          <div><label class="lbl" for="lnOwed" id="lbl-lnOwed">Total Owed <span id="lbl-lnOwed-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnOwed" placeholder="5000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="lnOrig" id="lbl-lnOrig">Original Amount <span id="lbl-lnOrig-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnOrig" placeholder="8000.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="lnRate">Interest Rate %</label><input class="inp" type="number" id="lnRate" placeholder="6.9" min="0" step="any"/></div>
+          <div><label class="lbl" for="lnPayment" id="lbl-lnPayment">Monthly Payment <span id="lbl-lnPayment-sym" style="color:#4d9fff;font-weight:700">£</span></label><input class="inp" type="number" id="lnPayment" placeholder="200.00" min="0" step="any"/></div>
+          <div><label class="lbl" for="lnEndDate">End Date (optional)</label><input class="inp" type="date" id="lnEndDate" style="color-scheme:dark"/></div>
         </div>
         <button class="btn-add" style="background:#ff4d6d;color:#000" onclick="lnAdd()">+ Add Loan</button>
       </div>
