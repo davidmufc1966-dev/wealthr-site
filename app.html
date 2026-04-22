@@ -1795,6 +1795,10 @@ annually: 'Annually',
 function esc(s) {
 return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+const _rateLimitedUntil = {};
+function _isRateLimited(service) { return (_rateLimitedUntil[service] || 0) > Date.now(); }
+function _rateLimitRemaining(service) { return Math.ceil(((_rateLimitedUntil[service] || 0) - Date.now()) / 1000); }
+function _setRateLimit(service, retryAfter) { _rateLimitedUntil[service] = Date.now() + (retryAfter || 60) * 1000; }
 function billsLoad() {
 const s = load();
 return s.bills || [];
@@ -2532,6 +2536,11 @@ window.scrollTo({top: 0, behavior: 'smooth'});
 const GECKO_IDS = {BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',ADA:'cardano',DOT:'polkadot',DOGE:'dogecoin',MATIC:'matic-network',LINK:'chainlink',AVAX:'avalanche-2',ATOM:'cosmos',LTC:'litecoin',UNI:'uniswap',TON:'the-open-network',SHIB:'shiba-inu',TRX:'tron',XLM:'stellar',ALGO:'algorand'};
 const COIN_EMOJI = {BTC:'₿',ETH:'🔷',BNB:'🟡',SOL:'◎',XRP:'💧',ADA:'🔵',DOT:'⚫',DOGE:'🐶',MATIC:'🟣',LINK:'🔗',AVAX:'🔺',ATOM:'⚛️',LTC:'Ł',UNI:'🦄',TON:'💎',SHIB:'🐕',TRX:'⚡',XLM:'⭐',ALGO:'◆'};
 async function fetchCryptoPrices(coins) {
+if (_isRateLimited('coingecko')) {
+const out = {};
+coins.forEach(c => out[c.toUpperCase()] = null);
+return out;
+}
 const ids = coins.map(c => encodeURIComponent(GECKO_IDS[c.toUpperCase()]||c.toLowerCase())).join(',');
 const urls = [
 `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=gbp&include_24hr_change=true`,
@@ -2541,10 +2550,14 @@ let data = null;
 for (const url of urls) {
 try {
 const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
+if (r.status === 429) { _setRateLimit('coingecko', parseInt(r.headers.get('Retry-After')) || 60); break; }
 if (r.ok) { data = await r.json(); break; }
 } catch {}
 }
-if (!data) throw new Error('Could not fetch crypto prices. Try again later.');
+if (!data) {
+if (_isRateLimited('coingecko')) throw new Error(`CoinGecko rate-limited. Try again in ${_rateLimitRemaining('coingecko')}s.`);
+throw new Error('Could not fetch crypto prices. Try again later.');
+}
 const results = {};
 coins.forEach(c => {
 const id = GECKO_IDS[c.toUpperCase()]||c.toLowerCase();
@@ -2966,16 +2979,29 @@ btn.textContent='+ Add Position'; btn.disabled=false;
 async function pfRefreshAll() {
 const s = load();
 if (!s.positions.length) return;
+if (_isRateLimited('twelvedata')) return toast(`Rate-limited — try again in ${_rateLimitRemaining('twelvedata')}s.`);
 const btn = document.getElementById('pfRefreshBtn');
 btn.textContent = '…'; btn.disabled = true;
 try {
 const tickers = s.positions.map(p => p.sym);
 const prices = await fetchStockPrices(tickers);
+const missed = [];
 let updated = 0;
-tickers.forEach(t => { if (prices[t] != null) { s.prices[t] = prices[t]; updated++; } });
+tickers.forEach(t => {
+if (prices[t] != null) { s.prices[t] = prices[t]; updated++; }
+else missed.push(t);
+});
 s.pfLastRefresh = Date.now();
 save(s); pfRender();
-toast(updated ? `Updated ${updated} price${updated>1?'s':''}!` : 'Could not fetch prices. Check your API key in ⚙️ Settings.', !updated);
+if (_isRateLimited('twelvedata')) {
+toast(`Rate-limited after ${updated} update${updated===1?'':'s'} — try again in ${_rateLimitRemaining('twelvedata')}s.`);
+} else if (updated && missed.length) {
+toast(`Updated ${updated}, couldn't fetch: ${missed.slice(0,5).join(', ')}${missed.length>5?`, +${missed.length-5} more`:''}`);
+} else if (updated) {
+toast(`Updated ${updated} price${updated>1?'s':''}!`, false);
+} else {
+toast('Could not fetch prices. Check your API key in ⚙️ Settings.');
+}
 } catch(e) { toast('Refresh failed: '+e.message); }
 finally { btn.textContent = '↻ Refresh'; btn.disabled = false; }
 }
@@ -3326,6 +3352,7 @@ btn.textContent='+ Add Coin'; btn.disabled=false;
 async function crRefreshAll() {
 const s=load();
 if(!(s.crypto||[]).length) return;
+if (_isRateLimited('coingecko')) return toast(`Rate-limited — try again in ${_rateLimitRemaining('coingecko')}s.`);
 const btn=document.getElementById('crRefreshBtn');
 btn.textContent='…'; btn.disabled=true;
 try {
@@ -3958,18 +3985,20 @@ const results = {};
 await Promise.all(tickers.map(async sym => {
 let price = null;
 const isIntl = sym.includes('.');
-if (isIntl && avKey) {
+if (isIntl && avKey && !_isRateLimited('alphavantage')) {
 try {
 const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(avKey)}`;
 const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
-if (r.ok) {
+if (r.status === 429) {
+_setRateLimit('alphavantage', parseInt(r.headers.get('Retry-After')) || 60);
+} else if (r.ok) {
 const d = await r.json();
 const p = d?.['Global Quote']?.['05. price'];
 if (p) price = parseFloat(p);
 }
 } catch {}
 }
-if (price == null && tdKey) {
+if (price == null && tdKey && !_isRateLimited('twelvedata')) {
 const url = `https://api.twelvedata.com/price?symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(tdKey)}`;
 const proxies = [
 [`https://corsproxy.io/?${encodeURIComponent(url)}`, r => r.json()],
@@ -3979,8 +4008,12 @@ const proxies = [
 for (const [proxyUrl, parse] of proxies) {
 try {
 const r = await fetch(proxyUrl, {signal: AbortSignal.timeout(6000)});
+if (r.status === 429) { _setRateLimit('twelvedata', parseInt(r.headers.get('Retry-After')) || 60); break; }
 if (!r.ok) continue;
 const d = await parse(r);
+if (d?.status === 'error' && /rate limit|too many/i.test(d.message || '')) {
+_setRateLimit('twelvedata', 60); break;
+}
 if (d?.price) { price = parseFloat(d.price); break; }
 } catch {}
 }
