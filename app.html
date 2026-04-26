@@ -13304,6 +13304,39 @@ function installFabClick() {
 // before our listener attached. Safe to call repeatedly.
 setTimeout(_updateInstallFab, 100);
 
+// ⚠ TEMPORARY DEBUG — diagnose why install banner isn't showing
+setTimeout(() => {
+  try {
+    const banner = document.getElementById('topInstallBanner');
+    const standalone = _isStandalone();
+    const dismissed = lsGet('pf_install_banner_dismissed') === '1';
+    const exists = !!banner;
+    const display = banner ? (window.getComputedStyle(banner).display) : 'no element';
+
+    let reason;
+    if (!exists) reason = '✗ Element not in DOM';
+    else if (standalone) reason = '✗ Running as installed PWA (standalone)';
+    else if (dismissed) reason = '✗ Dismissed (clear pf_install_banner_dismissed in localStorage)';
+    else if (display === 'none') reason = '✗ display:none — updater never ran';
+    else reason = '✓ Should be VISIBLE — display: ' + display;
+
+    const diag = document.createElement('div');
+    diag.style.cssText = 'position:fixed;top:8px;left:8px;right:8px;z-index:99999;background:#000;border:1px solid #4d9fff;border-radius:8px;padding:10px;font-family:monospace;font-size:10px;color:#fff;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.6)';
+    diag.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="color:#4d9fff;font-weight:700;margin-bottom:4px">📲 INSTALL BANNER DEBUG</div>
+          <div>${reason}</div>
+          <div>exists: ${exists} · display: ${display}</div>
+          <div>standalone: ${standalone} · dismissed: ${dismissed}</div>
+        </div>
+        <button onclick="this.parentElement.parentElement.remove()" style="background:#333;border:none;color:#fff;width:24px;height:24px;border-radius:4px;cursor:pointer;flex-shrink:0">✕</button>
+      </div>`;
+    document.body.appendChild(diag);
+  } catch(e) { console.warn('Banner debug failed:', e); }
+}, 1500);
+// END temporary debug
+
 async function installApp() {
   // Plausible: user tapped one of the install affordances. The source
   // is left implicit (button can be in banner, sidebar or drawer) —
