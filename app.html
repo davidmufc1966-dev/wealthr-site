@@ -2947,6 +2947,7 @@ const sym=document.getElementById('pfSym').value.trim().toUpperCase();
 const shares=parseFloat(document.getElementById('pfShares').value);
 const cost=parseFloat(document.getElementById('pfCost').value);
 if(!sym) return toast('Enter a ticker symbol.');
+if(!/^[A-Z0-9.\-]{1,12}$/.test(sym)) return toast('Enter a valid ticker symbol.');
 if(!shares||shares<=0) return toast('Enter a valid share count.');
 if(!cost||cost<=0) return toast('Enter a valid avg cost.');
 const s=load();
@@ -3114,7 +3115,7 @@ const bal=parseFloat(document.getElementById('bkBal').value);
 const rate=parseFloat(document.getElementById('bkRate').value)||null;
 if(!name) return toast('Enter an account name.');
 if(!bank) return toast('Enter a bank name.');
-if(isNaN(bal)) return toast('Enter a valid balance.');
+if(isNaN(bal)||bal<0) return toast('Enter a valid balance.');
 const s=load();
 if(!s.bankAccounts) s.bankAccounts=[];
 const goal = parseFloat(document.getElementById('bkGoal').value)||null;
@@ -3316,6 +3317,7 @@ const sym=document.getElementById('crSym').value.trim().toUpperCase();
 const amt=parseFloat(document.getElementById('crAmt').value);
 const costPer=parseFloat(document.getElementById('crCost').value);
 if(!sym) return toast('Enter a coin symbol.');
+if(!/^[A-Z0-9]{1,10}$/.test(sym)) return toast('Enter a valid coin symbol.');
 if(!amt||amt<=0) return toast('Enter a valid amount.');
 if(!costPer||costPer<=0) return toast('Enter a valid buy price.');
 const s=load();
@@ -4204,7 +4206,7 @@ document.getElementById('propertyTable').innerHTML = `<table><thead><tr>
 </tr></thead><tbody>${props.map(p => {
 const color = PR_COLORS[p.type] || '#888';
 const equity = Math.max(0,(p.value||0)-(p.mortgage||0));
-const pct = p.value ? Math.round(equity/p.value*100) : 0;
+const pct = p.value ? (equity >= p.value ? 100 : equity <= 0 ? 0 : Math.min(99, Math.round(equity/p.value*100))) : 0;
 return `<tr>
 <td><span class="sym-name">${esc(p.name)}</span><br><span style="font-size:10px;color:#555">${esc(p.address||'')}</span></td>
 <td><span class="type-badge" style="background:${color}18;color:${color};border:1px solid ${color}44">${esc(p.type)}</span></td>
